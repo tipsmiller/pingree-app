@@ -1,0 +1,840 @@
+<!DOCTYPE html><meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>CSU Baja Field Guide</title>
+
+    <!--windows phone 8 workaround for innerhtml:-->
+    <script src="js/winstore-jscompat.js"></script>
+    
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/PlantService.js"></script>
+    <script src="js/InvertService.js"></script>
+    <script src="js/VertService.js"></script>
+    <script src="js/appControllers.js"></script>
+
+    
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+</head>
+<body ng-app="starter" ng-controller="MainCtrl">
+
+<ion-page>
+    <ion-nav-bar class="bar-header bar-stable" align-title="center" id="headerbar">
+        <ion-nav-buttons side="right">
+            <a class="button icon ion-search ion-home button-clear padding" ui-sref="search"></a>
+            <a class="button icon ion-home button-clear" ui-sref="home"></a>
+        </ion-nav-buttons>
+        <ion-nav-back-button class="button-icon ion-chevron-left padding-right">Back</ion-nav-back-button>
+    </ion-nav-bar>
+    <ion-nav-view animation="slide-left-right">
+    </ion-nav-view>
+</ion-page>
+
+<script id="home.html" type="text/ng-template">
+<ion-view title="Home">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider">Sections</div>
+            <a ui-sref="plants" class="item item-icon-left-custom">
+                <i class="icon icon-plant"></i>
+                Plants
+            </a>
+            <a ui-sref="verts" class="item item-icon-left-custom">
+                <i class="icon icon-vert"></i>
+                Vertebrates
+            </a>
+            <a ui-sref="inverts" class="item item-icon-left-custom">
+                <i class="icon icon-invert"></i>
+                Invertebrates
+            </a>
+        </div>
+        <!---<div class="list">
+            <div class="item item-divider">Habitat</div>
+        </div>--->
+        <div class="list">
+            <div class="item item-divider" class="item">Resources</div>
+            <a ui-sref="about" class="item">About</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="search.html" type="text/ng-template">
+<ion-view title="Search">
+    <div class="bar bar-subheader item-input-inset">
+        <label class="item-input-wrapper">
+            <i class="icon ion-ios-search placeholder-icon"></i>
+            <input type="search" placeholder="Search" ng-model="query" ng-change="Change();" autofocus>
+        </label>
+        <button class="button button-clear" ng-click="clearSearch();">Cancel</button>
+    </div>
+    <ion-content class="content has-header has-subheader padding">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | filter: query | filter : plantshow | orderBy: 'species'" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Vertebrates</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts | filter: query | filter : vertshow | orderBy: 'species'" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Invertebrates</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts | filter: query | filter : invertshow | orderBy: 'species'" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="about.html" type="text/ng-template">
+<ion-view title="About">
+    <ion-content class="content has-header">
+        <div class="list"> 
+            <a ui-sref="acknowledgments" class="item">Acknowledgments</a> 
+            <a ui-sref="copyright" class="item">&copy; 2003-2014 Colorado State Univeristy</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script> 
+    
+<script id="acknowledgments.html" type="text/ng-template">
+<ion-view title="Acknowledgments">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider">College of Natural Resources Faculty</div>
+            <div class="item">Dr. Kate Huvyeart</div>
+            <div class="item">Dr. Paul Meiman</div>
+            <div class="item item-divider">TILT Development Staff</div>
+            <div class="item">Gavin Miller</div>
+            <div class="item">Nolan Smith</div>
+            <div class="item">Chris Geanious</div>
+            <div class="item item-divider">College of Natural Resources Students</div>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="copyright.html" type="text/ng-template">
+<ion-view title="Copyright">
+    <ion-content class="content has-header">
+        <p>Many of the images in this field guide are copyrighted. The permission of the owner of the copyrights must be secured before an image may be copied, distributed, modified, or displayed.<br />
+		Icons from: www.becuo.com/, www.icons8.com</p>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="plants.html" type="text/ng-template">
+<ion-view title="Plants">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a class="item item-icon-left-custom" ui-sref="plantsall">
+                <i class="icon icon-plant"></i>
+                All Plants
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="nonvascular">
+                <i class="icon icon-nonvascular"></i>
+                Non-Vascular
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="vascular">
+                <i class="icon icon-vascular"></i>
+                Vascular
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="seedbearing">
+                <i class="icon icon-seedbearing"></i> 
+                Seed-Bearing
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="gymnosperm">
+                <i class="icon icon-gymnosperm"></i> 
+                Gymnosperms
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="angiosperm">
+                <i class="icon icon-angiosperm"></i> 
+                Angiosperms
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="nonseedbearing">
+                <i class="icon icon-nonseedbearing"></i> 
+                Non-Seed-Bearing
+            </a>
+            <a class="item" ui-sref="other">
+                Other
+            </a>
+        </div>
+        <!---<div class="list">
+            <div class="item item-divider">Communities</div>
+            <a ui-sref="Alpine" class="item">Alpine</a>
+            <a ui-sref="Lodgepole Pine" class="item">Lodgepole Pine</a>
+            <a ui-sref="Mountain Shrub" class="item">Mountain Shrub</a>
+            <a ui-sref="Ponderosa Pine" class="item">Ponderosa Pine</a>
+            <a ui-sref="Riparian" class="item">Riparian</a>
+            <a ui-sref="Spruce-fir" class="item">Spruce-fir</a>
+        </div>--->
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="plantsall.html" type="text/ng-template">
+<ion-view title="All Plants" ng-controller="PlantsCtrl">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="plant in data.plants  | orderBy: 'species'" class="item item-text-wrap" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="nonvascular.html" type="text/ng-template">
+<ion-view title="Non-Vascular">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'nonvascular'}" class="item item-text-wrap" ui-sref="nonvasculardetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="vascular.html" type="text/ng-template">
+<ion-view title="Vascular">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider">Gymnosperms</div>
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'gymnosperm'}" class="item item-text-wrap" ui-sref="vasculardetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+            <div class="item item-divider">Angiosperms</div>
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'angiosperm'}" class="item item-text-wrap" ui-sref="vasculardetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+            <div class="item item-divider">Non-Seed-Bearing</div>
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'nonseedbearing'}" class="item item-text-wrap" ui-sref="vasculardetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="seedbearing.html" type="text/ng-template">
+<ion-view title="Seed-Bearing">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider">Gymnosperms</div>
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'gymnosperm'}" class="item item-text-wrap" ui-sref="seedbearingdetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+            <div class="item item-divider">Angiosperms</div>
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'angiosperm'}" class="item item-text-wrap" ui-sref="seedbearingdetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="gymnosperm.html" type="text/ng-template">
+<ion-view title="Gymnosperms">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'gymnosperm'}" class="item item-text-wrap" ui-sref="gymnospermdetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="angiosperm.html" type="text/ng-template">
+<ion-view title="Angiosperms">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'angiosperm'}" class="item item-text-wrap" ui-sref="angiospermdetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="nonseedbearing.html" type="text/ng-template">
+<ion-view title="Non-Seed-Bearing">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'nonseedbearing'}" class="item item-text-wrap" ui-sref="nonseedbearingdetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="other.html" type="text/ng-template">
+<ion-view title="Other">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="plant in data.plants   | orderBy: 'species'| filter : {type: 'other'}" class="item item-text-wrap" ui-sref="otherdetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="plantsdetails.html" type="text/ng-template">
+<ion-view title="{{data.plant.species}}">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider item-text-wrap"><b><dfn>{{data.plant.species}}</dfn></b></div>
+            <div class="item item-text-wrap"><b>{{data.plant.common_name_eng}}</b></div>
+            <div class="item item-text-wrap"><b>{{data.plant.common_name_esp}}</b></div>
+            <div class="item">
+                <a class="button icon ion-play" id="{{data.plant.pronunciation}}" ng-click="mediaPlay('{{data.plant.pronunciation}}');"> Pronunciation</a>
+            </div>
+            <div class="item item-text-wrap"><b>Type:</b> {{data.plant.type}}</div>
+            <div class="item item-text-wrap"><b>Distribution:</b> {{data.plant.distribution}}</div>
+            <div class="item item-text-wrap"><b>Native:</b> {{data.plant.native}}</div>
+            <div class="item item-text-wrap"><b>Description:</b> {{data.plant.description}}</div>
+        </div>
+            <div class="list">
+                <div class="item item-divider"><b>Images</b></div>
+                <div ng-repeat="img in data.plant.images" ng-init="src=img.src">
+                    <div class="item item-text-wrap"><b>{{img.type}}</b></div>
+                    <div class="item"><img data-ng-src="{{img.src}}" class="imaged"></div>
+                    <div class="item item-text-wrap">Image credit: {{img.credit}}</div>
+                </div>
+            </div>
+            <div class="list">
+                <div class="item item-divider"><b>Eco-Regions</b></div>
+                <a ng-repeat="eco_region in data.plant.eco_regions" class="item" ui-sref="{{eco_region.type}}">{{eco_region.type}}</a>
+            </div>      
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="inverts.html" type="text/ng-template">
+<ion-view title="Invertebrates">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a class="item item-icon-left-custom" ui-sref="invertsall">
+                <i class="icon icon-invert"></i>
+                All Invertebrates
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="porifera">
+                <i class="icon icon-porifera"></i>
+                Porifera
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="cnidaria">
+                <i class="icon icon-cnidaria"></i>
+                Cnidaria
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="ctenophora">
+                <i class="icon icon-ctenophora"></i>
+                Ctenophora
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="platyhelminthes">
+                <i class="icon icon-platyhelminthes"></i>
+                Platyhelminthes
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="annelida">
+                <i class="icon icon-annelida"></i>
+                Annelida
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="mollusca">
+                <i class="icon icon-mollusca"></i>
+                Mollusca
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="arthropoda">
+                <i class="icon icon-arthropoda"></i>
+                Arthropoda
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="bryozoa">
+                <i class="icon icon-bryozoa"></i>
+                Bryozoa
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="brachiopoda">
+                <i class="icon icon-brachiopoda"></i>
+                Brachiopoda
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="phoronida">
+                <i class="icon icon-phoronida"></i>
+                Phoronida
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="echinodermata">
+                <i class="icon icon-echinodermata"></i>
+                Echinodermata
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="chordata">
+                <i class="icon icon-chordata"></i>
+                Chordata
+            </a>
+        </div>
+        <!---<div class="list">
+            <div class="item item-divider">Communities</div>
+            <a ui-sref="Alpine" class="item">Alpine</a>
+            <a ui-sref="Lodgepole Pine" class="item">Lodgepole Pine</a>
+            <a ui-sref="Mountain Shrub" class="item">Mountain Shrub</a>
+            <a ui-sref="Ponderosa Pine" class="item">Ponderosa Pine</a>
+            <a ui-sref="Riparian" class="item">Riparian</a>
+            <a ui-sref="Spruce-fir" class="item">Spruce-fir</a>
+        </div>--->
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="invertsall.html" type="text/ng-template">
+<ion-view title="All Invertebrates">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="invert in data.inverts" class="item item-text-wrap" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="porifera.html" type="text/ng-template">
+<ion-view title="Porifera">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Porifera'}" class="item item-text-wrap" ui-sref="poriferadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="cnidaria.html" type="text/ng-template">
+<ion-view title="Cnidaria">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Cnidaria'}" class="item item-text-wrap" ui-sref="cnidariadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="ctenophora.html" type="text/ng-template">
+<ion-view title="Ctenophora">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Ctenophora'}" class="item item-text-wrap" ui-sref="ctenophoradetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="platyhelminthes.html" type="text/ng-template">
+<ion-view title="Platyhelminthes">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Platyhelminthes'}" class="item item-text-wrap" ui-sref="platyhelminthesdetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="annelida.html" type="text/ng-template">
+<ion-view title="Annelida">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Annelida'}" class="item item-text-wrap" ui-sref="annelidadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="mollusca.html" type="text/ng-template">
+<ion-view title="Mollusca">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Mollusca'}" class="item item-text-wrap" ui-sref="molluscadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="arthropoda.html" type="text/ng-template">
+<ion-view title="Arthropoda">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Arthropoda'}" class="item item-text-wrap" ui-sref="arthropodadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="bryozoa.html" type="text/ng-template">
+<ion-view title="Bryozoa">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Bryozoa'}" class="item item-text-wrap" ui-sref="bryozoadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="brachiopoda.html" type="text/ng-template">
+<ion-view title="Brachiopoda">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Brachiopoda'}" class="item item-text-wrap" ui-sref="brachiopodadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="phoronida.html" type="text/ng-template">
+<ion-view title="Phoronida">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Phoronida'}" class="item item-text-wrap" ui-sref="phoronidadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="echinodermata.html" type="text/ng-template">
+<ion-view title="Echinodermata">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Echinodermata'}" class="item item-text-wrap" ui-sref="echinodermatadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="chordata.html" type="text/ng-template">
+<ion-view title="Chordata">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="invert in data.inverts   | orderBy: 'species'| filter : {phylum: 'Chordata'}" class="item item-text-wrap" ui-sref="chordatadetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+<script id="invertsdetails.html" type="text/ng-template">
+<ion-view title="{{data.invert.species}}">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider"><b><dfn>{{data.invert.species}}</dfn></b></div>
+            <div class="item item-text-wrap"><b>{{data.invert.common_name_eng}}</b></div>
+            <div class="item item-text-wrap"><b>{{data.invert.common_name_esp}}</b></div>
+            
+            <div class="item">
+                <a class="button icon ion-play" id="{{data.invert.pronunciation}}" ng-click="mediaPlay('{{data.invert.pronunciation}}');"> Pronunciation</a>
+            </div>
+            
+            <div class="item item-text-wrap"><b>Phylum:</b> {{data.invert.phylum}}</div>
+            <div class="item item-text-wrap"><b>Class:</b> {{data.invert.class}}</div>
+            <div class="item item-text-wrap"><b>Order:</b> {{data.invert.order}}</div>
+            <div class="item item-text-wrap"><b>Family:</b> {{data.invert.family}}</div>
+            <div class="item item-text-wrap"><b>Distribution:</b> {{data.invert.distribution}}</div>
+            <div class="item item-text-wrap"><b>Status:</b> {{data.invert.status}}</div>
+            <div class="item item-text-wrap"><b>Occurrence:</b> {{data.invert.occurrence}}</div>
+            <div class="item item-text-wrap"><b>Description:</b> {{data.invert.description}}</div>
+        </div>
+        <div class="list">
+            <div class="item item-divider"><b>Sounds</b></div>
+            <div class="item" ng-repeat="sounds in data.invert.sounds" ng-init="src=sounds.src"><a class="button icon ion-play" id="{{src}}" ng-click="mediaPlay('{{src}}');"> Play</a> {{sounds.credit}}</div>
+        </div>
+        <div class="list">
+            <div class="item item-divider"><b>Images</b></div>
+            <div ng-repeat="img in data.invert.images" ng-init="src=img.src">
+                <div class="item item-text-wrap"><b>{{img.type}}</b></div>
+                <div class="item"><img data-ng-src="{{img.src}}" class="imaged"></div>
+                <div class="item item-text-wrap">Image credit: {{img.credit}}</div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="item item-divider"><b>Habitats</b></div>
+            <a ng-repeat="habitat in data.invert.habitats" class="item" ui-sref="{{habitat}}">{{habitat}}</a>
+            <div class="item item-text-wrap"><b>Other habitats:</b> {{data.invert.habitat_other}}</div>
+        </div>        
+    </ion-content>
+</ion-view>
+</script>
+  
+<script id="verts.html" type="text/ng-template">
+<ion-view title="Vertebrates">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a class="item item-icon-left-custom" ui-sref="vertsall">
+                <i class="icon icon-vert"></i>
+                All Vertebrates
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="fish">
+                <i class="icon icon-fish"></i>
+                Fish
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="amphibian">
+                <i class="icon icon-amphibian"></i>
+                Amphibians
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="reptile">
+                <i class="icon icon-reptile"></i>
+                Reptiles
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="bird">
+                <i class="icon icon-bird"></i>
+                Birds
+            </a>
+            <a class="item item-icon-left-custom" ui-sref="mammal">
+                <i class="icon icon-mammal"></i>
+                Mammals
+            </a>
+        </div>
+        <!---<div class="list">
+            <div class="item item-divider">Communities</div>
+            <a ui-sref="Alpine" class="item">Alpine</a>
+            <a ui-sref="Lodgepole Pine" class="item">Lodgepole Pine</a>
+            <a ui-sref="Mountain Shrub" class="item">Mountain Shrub</a>
+            <a ui-sref="Ponderosa Pine" class="item">Ponderosa Pine</a>
+            <a ui-sref="Riparian" class="item">Riparian</a>
+            <a ui-sref="Spruce-fir" class="item">Spruce-fir</a>
+        </div>--->
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="vertsall.html" type="text/ng-template">
+<ion-view title="All Vertebrates">
+    <ion-content class="content has-header">
+        <div class="list">
+            <a ng-repeat="vert in data.verts | orderBy: 'species'" class="item item-text-wrap" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="fish.html" type="text/ng-template">
+<ion-view title="Fish">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="vert in data.verts   | orderBy: 'species'| filter : {class: 'fish'}" class="item item-text-wrap" ui-sref="fishdetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="amphibian.html" type="text/ng-template">
+<ion-view title="Amphibians">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="vert in data.verts   | orderBy: 'species'| filter : {class: 'amphibian'}" class="item item-text-wrap" ui-sref="amphibiandetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="reptile.html" type="text/ng-template">
+<ion-view title="Reptiles">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="vert in data.verts   | orderBy: 'species'| filter : {class: 'reptile'}" class="item item-text-wrap" ui-sref="reptiledetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="bird.html" type="text/ng-template">
+<ion-view title="Birds">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="vert in data.verts   | orderBy: 'species'| filter : {class: 'bird'}" class="item item-text-wrap" ui-sref="birddetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="mammal.html" type="text/ng-template">
+<ion-view title="Mammals">
+    <ion-content class="content has-header">    
+        <div class="list">
+            <a ng-repeat="vert in data.verts   | orderBy: 'species'| filter : {class: 'mammal'}" class="item item-text-wrap" ui-sref="mammaldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+
+<script id="vertsdetails.html" type="text/ng-template">
+<ion-view title="{{data.vert.species}}">
+    <ion-content class="content has-header">
+        <div class="list">
+            <div class="item item-divider"><b><dfn>{{data.vert.species}}</dfn></b></div>
+            <div class="item item-text-wrap"><b>{{data.vert.common_name_eng}}</b></div>
+            <div class="item item-text-wrap"><b>{{data.vert.common_name_esp}}</b></div>
+            <div class="item">
+                <a class="button icon ion-play" id="{{data.vert.pronunciation}}" ng-click="mediaPlay('{{data.vert.pronunciation}}');"> Pronunciation</a>
+            </div>
+            <div class="item item-text-wrap"><b>Class:</b> {{data.vert.class}}</div>
+            <div class="item item-text-wrap"><b>Order:</b> {{data.vert.order}}</div>
+            <div class="item item-text-wrap"><b>Family:</b> {{data.vert.family}}</div>
+            <div class="item item-text-wrap"><b>Distribution:</b> {{data.vert.distribution}}</div>
+            <div class="item item-text-wrap"><b>Native:</b> {{data.vert.native}}</div>
+            <div class="item item-text-wrap"><b>Occurrence:</b> {{data.vert.occurrence}}</div>
+            <div class="item item-text-wrap"><b>Description:</b> {{data.vert.description}}</div>
+        </div>
+        <div class="list">
+            <div class="item item-divider"><b>Sounds</b></div>
+                <div class="item" ng-repeat="sounds in data.vert.sounds" ng-init="src=sounds.src"><a class="button icon ion-play" id="{{src}}" ng-click="mediaPlay('{{src}}');"> Play</a> {{sounds.credit}}</div>
+        </div>
+        <div class="list">
+            <div class="item item-divider"><b>Images</b></div>
+            <div ng-repeat="img in data.vert.images" ng-init="src=img.src">
+                <div class="item item-text-wrap"><b>{{img.type}}</b></div>
+                <div class="item"><img data-ng-src="{{img.src}}" class="imaged"></div>
+                <div class="item item-text-wrap">Image credit: {{img.credit}}</div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="item item-divider"><b>Habitats</b></div>
+            <a ng-repeat="habitat in data.vert.habitats" class="item" ui-sref="{{habitat}}">{{habitat}}</a>
+            <div class="item item-text-wrap"><b>Other habitats:</b> {{data.vert.habitat_other}}</div>
+        </div>   
+    </ion-content>
+</ion-view>
+</script>
+    
+
+<!---   
+<script id="alpine.html" type="text/ng-template">
+<ion-view title="Alpine">
+    <ion-content class="content has-header">    
+        <div class="list">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | orderBy: 'species' | filter : {communities: 'Alpine'} | filter : plantshow" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Birds</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts  | orderBy: 'species'| filter : {communities: 'Alpine'} | filter : vertshow" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Mammals</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts  | orderBy: 'species'| filter : {communities: 'Alpine'} | filter : invertshow" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+    <script id="lodgepole.html" type="text/ng-template">
+<ion-view title="Lodgepole Pine">
+    <ion-content class="content has-header">    
+        <div class="list">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | orderBy: 'species' | filter : {communities: 'Lodgepole Pine'} | filter : plantshow" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Birds</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts  | orderBy: 'species'| filter : {communities: 'Lodgepole Pine'} | filter : vertshow" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Mammals</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts  | orderBy: 'species'| filter : {communities: 'Lodgepole Pine'} | filter : invertshow" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+    <script id="shrub.html" type="text/ng-template">
+<ion-view title="Mountain Shrub">
+    <ion-content class="content has-header">    
+        <div class="list">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | orderBy: 'species' | filter : {communities: 'Mountain Shrub'} | filter : plantshow" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Birds</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts  | orderBy: 'species'| filter : {communities: 'Mountain Shrub'} | filter : vertshow" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Mammals</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts  | orderBy: 'species'| filter : {communities: 'Mountain Shrub'} | filter : invertshow" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+    <script id="ponderosa.html" type="text/ng-template">
+<ion-view title="Ponderosa Pine">
+    <ion-content class="content has-header">    
+        <div class="list">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | orderBy: 'species' | filter : {communities: 'Ponderosa Pine'} | filter : plantshow" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Birds</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts  | orderBy: 'species'| filter : {communities: 'Ponderosa Pine'} | filter : vertshow" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Mammals</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts  | orderBy: 'species'| filter : {communities: 'Ponderosa Pine'} | filter : invertshow" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+    <script id="riparian.html" type="text/ng-template">
+<ion-view title="Riparian">
+    <ion-content class="content has-header">    
+        <div class="list">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | orderBy: 'species' | filter : {communities: 'Riparian'} | filter : plantshow" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Birds</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts  | orderBy: 'species'| filter : {communities: 'Riparian'} | filter : vertshow" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Mammals</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts  | orderBy: 'species'| filter : {communities: 'Riparian'} | filter : invertshow" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+    
+    <script id="spruce.html" type="text/ng-template">
+<ion-view title="Spruce-fir">
+    <ion-content class="content has-header">    
+        <div class="list">
+        <div class="item item-divider" ng-click="collapsePlants();">
+            <b>Plants</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !plantcollapsed, 'ion ion-plus': plantcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="plant in data.plants | orderBy: 'species' | filter : {communities: 'Spruce-fir'} | filter : plantshow" class="item" ui-sref="plantsalldetails({plant: plant.id})"><dfn>{{plant.species}}</dfn> - {{plant.common_name_eng}} - {{plant.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseVerts();">
+            <b>Birds</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !vertcollapsed, 'ion ion-plus': vertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="vert in data.verts  | orderBy: 'species'| filter : {communities: 'Spruce-fir'} | filter : vertshow" class="item" ui-sref="vertsalldetails({vert: vert.id})"><dfn>{{vert.species}}</dfn> - {{vert.common_name_eng}} - {{vert.common_name_esp}}</a>
+        <div class="item item-divider" ng-click="collapseInverts();">
+            <b>Mammals</b>
+            <div style="float:right"><a ng-class="{'icon ion-minus': !invertcollapsed, 'ion ion-plus': invertcollapsed}"></a></div>
+        </div>
+            <a ng-repeat="invert in data.inverts  | orderBy: 'species'| filter : {communities: 'Spruce-fir'} | filter : invertshow" class="item" ui-sref="invertsalldetails({invert: invert.id})"><dfn>{{invert.species}}</dfn> - {{invert.common_name_eng}} - {{invert.common_name_esp}}</a>
+        </div>
+    </ion-content>
+</ion-view>
+</script>
+--->  
+    
+    
+</body>
+</html>

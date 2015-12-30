@@ -1,0 +1,324 @@
+/* Empty. Add your own CSS if you like */
+
+
+.item-icon-left-custom .icon, .item-icon-right-custom .icon
+{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  font-size: 32px;
+}
+
+.item-icon-left-custom .icon:before, .item-icon-right-custom .icon:before
+{
+    display: block;
+    width: 32px;
+    text-align: center;
+}
+
+.item-icon-left-custom
+{
+    padding-left: 64px;
+}
+
+.item-icon-left-custom .icon
+{
+    left: 11px;
+}
+
+.item-icon-right-custom
+{
+    padding-right: 64px;
+}
+
+.item-icon-right-custom .icon
+{
+    right: 11px;
+}
+
+.imaged
+{
+    height: auto;
+    max-width: 100%;
+}
+
+.icon-plant:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-01.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-vert:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-02.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-invert:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-03.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-nonvascular:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-04.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-vascular:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-05.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-seedbearing:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-06.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-gymnosperm:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-07.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-angiosperm:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-08.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-nonseedbearing:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-09.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-fish:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-10.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-amphibian:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-11.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-reptile:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-12.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-bird:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-13.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-mammal:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-14.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-porifera:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-15.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-cnidaria:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-16.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-ctenophora:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-17.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-platyhelminthes:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-18.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-annelida:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-19.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-mollusca:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-20.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-arthropoda:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-21.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-bryozoa:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-22.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-brachiopoda:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-23.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-phoronida:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-24.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-echinodermata:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-03.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.icon-chordata:after
+{
+    display: inline-block;
+    content: "";
+    background: url("../icons/Icons-25.png") no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+}
+
+.indent1
+{
+    padding-left: 7%;
+}
+
+.indent2
+{
+    padding-left: 14%;
+}
